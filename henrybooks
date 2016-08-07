@@ -1,0 +1,95 @@
+Enter file contents here<?php 
+
+$output = NULL; 
+
+ 
+ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+     $titleSearch = $_POST['Title'];
+     $authorSearch = $_POST['Author'];
+     $publisherSearch = $_POST['Publisher'];
+
+     $errors = array();
+
+ }
+ ?>
+
+<?php
+//connect to database
+$db = mysqli_connect ('localhost', 'root', 'joseph14','program4') or die ('Error connecting to MYSQL');
+
+
+//Query the database
+
+//results when searching by a particular author
+$query_author = $db -> query ("SELECT title AS bt
+FROM book, wrote, author 
+WHERE author.author_last = '$authorSearch' and book.book_code = wrote.book_code and author.author_num = wrote.author_num");
+
+
+while ($rows = $query_author -> fetch_assoc())
+{
+    $Title = $rows ['bt'];
+
+    $output .= "Books written by $authorSearch" . "<p> Title: $Title<br /></p>";
+}
+
+$query_title = $db -> query ("SELECT title AS title
+    FROM book 
+    WHERE title like '$titleSearch'");
+/*
+foreach($rows = $query_title -> fetch_assoc())
+{
+    $book = $rows ['title'];
+
+    $output .= "Books written by $authorSearch" . "<p> Title: $book<br /></p>";
+}
+
+    $query_publisher = $db -> query ("SELECT title AS pub
+    FROM book, pubilsher 
+    WHERE publisher.publisher_name = '$publisherSearch' and book.publisher_code");
+/*
+while ($rows = $query_publisher -> fetch_assoc())
+{
+    $publisher = $rows ['pub'];
+
+    $output .= "Books written by $publisher_search " . "<p> Title: $publisher<br /></p>";
+}
+*/
+
+?> 
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>
+            Henry Books
+        </title>
+    </head>    
+<body>
+
+ <form action="Joe4.php" method="post">
+     <h2>
+         Book Search Site
+     </h2>
+<fieldset>    
+    <legend>
+        <i>
+            Search
+        </i>
+        
+    </legend size>
+        By Author's Name <br><input type="text" name="Author" size="20" maxlength= "100" pattern ="[A-Za-z\s]{1,20}" title = "Please use only alphabetical characters. No numbers or special characters.">
+    <input type="Submit"name="submit" value="Search"><br><br>
+        By Word in Title <br><input type="text" name="Title" size="20" maxlength="100" pattern ="[A-Za-z\s]{1,20}" title = "Please use only alphabetical characters. No numbers or special characters.">
+    <input type="Submit"name="submit" value="Search"><br><br>
+        By Publisher <br><input type="text" name="Publisher" size="20" maxlength="100" pattern ="[A-Za-z\s]{1,20}" title = "Please use only alphabetical characters. No numbers or special characters.">
+    <input type="Submit"name="submit" value="Search"><br><br>
+</fieldset>
+ </form>
+</body>
+</html> 
+<?php echo $output; ?>
